@@ -116,6 +116,9 @@ class NordicDut(BaseDutNodeClass):
         event_closer.set()
         return True
     
+    def pre_testcase_loop(self):
+        pass
+    
     def pre_iteration_loop(self):
         pass
 
