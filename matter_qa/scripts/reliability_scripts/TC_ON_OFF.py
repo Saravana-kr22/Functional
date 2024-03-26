@@ -16,14 +16,18 @@ class TC_ON_OFF(MatterQABaseTestCaseClass):
         self.tc_name = "ON_OFF"
         self.tc_id = "stress_1_3"
         super().__init__(*args)
+
+        # For commissioning the TH1 to the dut
         try:
             self.dut.factory_reset_dut()
+            self.dut.pre_testcase_loop()
             self.pair_dut()
         except TestCaseError:
-            self.dut._kill_app()
+            self.dut.factory_reset_dut()
             asserts.fail("Failed to commission the TH1")
 
     def check_cluster_status(self, after_operation_cluster_status, current_cluster_status) -> dict:
+        # This function is used to check the write command is executed successfully
         if after_operation_cluster_status != current_cluster_status:
             return {"status": "success"}
         else:
@@ -33,12 +37,15 @@ class TC_ON_OFF(MatterQABaseTestCaseClass):
     async def on_off_cluster_operations(self) -> dict:
         try:
             clusters = Clusters.Objects.OnOff
+            # For checking the current State of On/OFF
             current_cluster_status = await self.read_single_attribute_check_success(cluster=clusters,
                                                                                     attribute=Clusters.OnOff.Attributes.OnOff,
                                                                                     endpoint=1)
             # if current_cluster_status is True then cluster is in ON state else it is OFF
             logging.info(
                 f"The ON-OFF cluster's current condition is {'ON' if current_cluster_status is True else 'OFF'}")
+            
+            # This condition will write the oposite value of read
             if current_cluster_status is True:
                 await self.default_controller.SendCommand(nodeid=self.dut_node_id, endpoint=1,
                                                           payload=Clusters.OnOff.Commands.Off())
@@ -72,7 +79,7 @@ class TC_ON_OFF(MatterQABaseTestCaseClass):
                 raise IterationError(e)
 
         await tc_on_off(self)
-        self.dut._kill_app()
+        self.dut.factory_reset_dut()
 
 if __name__ == "__main__":
     default_matter_test_main(testclass=TC_ON_OFF, do_not_commision_first=True)

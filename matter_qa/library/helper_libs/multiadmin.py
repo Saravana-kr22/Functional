@@ -17,9 +17,10 @@ class Multi_Admin(MatterQABaseTestCaseClass):
         self.current_controller = 0
         try:
             self.dut.factory_reset_dut()
+            self.dut.pre_testcase_loop()
             self.pair_dut()
         except TestCaseError:
-            self.dut._kill_app()
+            self.dut.factory_reset_dut()
             asserts.fail("Failed to commission the TH1")
         self.th1 = self.default_controller
         

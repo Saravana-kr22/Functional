@@ -33,9 +33,10 @@ class TC_Multiadmin(Multi_Admin):
 
     @async_test_body
     async def test_tc_multi_fabric(self):
+        # For checking the number of controlers is supported by dut
         await self.check_the_no_of_controllers_are_in_range()
+        # For checking the commissioning_window_timeout is in range
         self.check_commissioning_window_timeout()
-
         @MatterQABaseTestCaseClass.iterate_tc(iterations=self.test_config.general_configs.number_of_iterations)
         async def tc_multi_fabric(*args,**kwargs):
             try:
@@ -52,6 +53,7 @@ class TC_Multiadmin(Multi_Admin):
                             raise TestCaseError(e)
                         continue
                     controller_details_dict = controller_build_result.get("dev_controller_dict")
+                    # List contains the controller objects
                     list_of_controllers.append(controller_details_dict)
                     self.current_controller =  controller_id_itr
                     paring_result_dict = await self.controller_pairing(controller_details_dict)
@@ -62,6 +64,7 @@ class TC_Multiadmin(Multi_Admin):
                         await self.pairing_failure(str(paring_result))
                         continue
                     logging.info("Successfully commissioned the {}-controller of {} iteration".format(controller_id_itr, self.test_config.current_iteration))
+                    # List contains the paired controllers node-id 
                     list_of_paired_controller_index.append(controller_details_dict.get("DUT_node_id"))
                 await self.shutdown_all_controllers(list_of_controllers,list_of_paired_controller_index)
                 gc.collect()
@@ -73,7 +76,6 @@ class TC_Multiadmin(Multi_Admin):
                 raise IterationError(e)
             
         await tc_multi_fabric(self)
-        self.dut._kill_app()
-
+        self.dut.factory_reset_dut()
 if __name__ == "__main__":
     default_matter_test_main(testclass=TC_Multiadmin,do_not_commision_first=True )

@@ -72,13 +72,10 @@ class Raspi(BaseDutNodeClass):
             log.info("Example App has been killed")
             self._delete_storage()
             self.ssh_session.close_ssh_connection()
-            self.stop_event = threading.Event()
-            self.thread = threading.Thread(target=self._start_matter_app)
-            self.thread.start()
-            time.sleep(2)
 
         except Exception as e:
             log.error(e, exc_info=True)
+            
     
     def _kill_app(self):
         command = f'ps aux | grep "{self.matter_app}"'
@@ -134,6 +131,12 @@ class Raspi(BaseDutNodeClass):
             return True
         except Exception as e:
             log.error(e, exc_info=True)
+
+    def pre_testcase_loop(self):
+        self.stop_event = threading.Event()
+        self.thread = threading.Thread(target=self._start_matter_app)
+        self.thread.start()
+        time.sleep(2)
 
     def stop_logging(self):
         # As we are killing the example while factory reset this will stop the logging process
