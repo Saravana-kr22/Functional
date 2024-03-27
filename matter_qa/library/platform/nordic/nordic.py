@@ -37,7 +37,7 @@ class SerialConfig:
         self.timeout = timeout
 
 class NordicDut(BaseDutNodeClass):
-    def __init__(self, test_config) -> None:
+    def __init__(self, test_config,*args,**kwargs) -> None:
         super().__init__()
         self.dut_config = test_config.dut_config.nordic
         serial_config = SerialConfig(test_config.dut_config.nordic.serial_port,
@@ -54,13 +54,13 @@ class NordicDut(BaseDutNodeClass):
             sys.exit(1)
 
 
-    def reboot_dut(self):
+    def reboot_dut(self,*args,**kwargs):
         pass
 
-    def start_matter_app(self):
+    def start_matter_app(self,*args,**kwargs):
         pass
 
-    def factory_reset_dut(self):
+    def factory_reset_dut(self,*args,**kwargs):
         try:
             log.info("Starting to Reset Nordic as the DUT")
             for i in range(1, 3):
@@ -74,7 +74,7 @@ class NordicDut(BaseDutNodeClass):
             log.error(e, exc_info=True)
         return True
     
-    def start_logging(self, file_name):
+    def start_logging(self, file_name,*args,**kwargs):
         pass
 
     def _start_logging(self, file_name=None) -> bool:
@@ -110,15 +110,15 @@ class NordicDut(BaseDutNodeClass):
             sys.exit()
         return True
 
-    def stop_logging(self):
+    def stop_logging(self,*args,**kwargs):
         global event_closer
         event_closer.set()
         return True
     
-    def pre_iteration_loop(self):
+    def pre_iteration_loop(self,*args,**kwargs):
         pass
 
-    def post_iteration_loop(self):
+    def post_iteration_loop(self,*args,**kwargs):
         try:
             if self.serial_session.serial_object.is_open:
                 self.serial_session.send_command(b"Test-iteration completed")

@@ -70,9 +70,9 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
 
             except Exception as e:
                 tb = traceback.format_exc()
-                raise TestExitError(str(e), tb)
+                raise TestCaseExit(str(e), tb)
                 
-        await tc_multi_fabric(self)
+        await tc_multi_fabric(self, skip_restart_dut_each_iteration = True)
         self.dut.factory_reset_dut()
 if __name__ == "__main__":
     default_matter_test_main(testclass=TC_Multiadmin)

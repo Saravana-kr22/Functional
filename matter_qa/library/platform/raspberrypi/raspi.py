@@ -47,6 +47,7 @@ class Raspi(BaseDutNodeClass):
         self.ssh_session = SSH(ssh_config)
         self.matter_app = self.dut_config.app_config.matter_app
         self.test_config = test_config
+        self.reset_dut_each_iteration = True
 
         try:
             self.ssh_session.open_ssh_connection()
@@ -54,7 +55,7 @@ class Raspi(BaseDutNodeClass):
             log.error("Could not establish SSH connection {}".format(e))
             sys.exit(1)
         
-    def reboot_dut(self):
+    def reboot_dut(self, *args, **kwargs):
         try:
             reboot_command = f"sudo reboot"
             self.ssh_session.send_command_no_output(reboot_command)
@@ -63,7 +64,7 @@ class Raspi(BaseDutNodeClass):
             log.error(e, exc_info=True)
             return True
 
-    def factory_reset_dut(self):
+    def factory_reset_dut(self, *args, **kwargs):
         try:
             log.info("Starting to Reset RPI as the DUT")
             # Executing the  'ps aux | grep process_name' command to find the PID value to kill
@@ -97,7 +98,7 @@ class Raspi(BaseDutNodeClass):
     def _delete_storage(self):
         self.ssh_session.send_command_no_output('rm -rf /tmp/chip_*')
 
-    def start_matter_app(self):
+    def start_matter_app(self, *args, **kwargs):
         self._start_matter_app()
 
     def _start_matter_app(self):
@@ -110,9 +111,8 @@ class Raspi(BaseDutNodeClass):
             traceback.print_exc()
         return True
 
-    def start_logging(self, file_name):
-        #TODO used this as of now need to updated
-        self.pre_iteration_loop()
+    def start_logging(self, file_name, *args, **kwargs):
+        pass
 
     def _start_logging(self, raspi_log, file_name=None):
 
@@ -132,17 +132,19 @@ class Raspi(BaseDutNodeClass):
         except Exception as e:
             log.error(e, exc_info=True)
 
-    def stop_logging(self):
+    def stop_logging(self, *args, **kwargs):
 
         # As we are killing the example while factory reset this will stop the logging process
         pass
     
-    def pre_iteration_loop(self):
-        self.stop_event = threading.Event()
-        self.thread = threading.Thread(target=self._start_matter_app)
-        self.thread.start()
-        time.sleep(2)
-    
-    def post_iteration_loop(self):
-        self.factory_reset_dut()
-        time.sleep(5)
+    def pre_iteration_loop(self, *args, **kwargs):
+        if not kwargs.get("skip_restart_dut_each_iteration") or self.reset_dut_each_iteration:
+            self.stop_event = threading.Event()
+            self.thread = threading.Thread(target=self._start_matter_app)
+            self.thread.start()
+            self.reset_dut_each_iteration = False
+            time.sleep(2)
+    def post_iteration_loop(self, *args, **kwargs):
+        if not kwargs.get("skip_restart_dut_each_iteration"):
+            self.factory_reset_dut()
+            time.sleep(2)
