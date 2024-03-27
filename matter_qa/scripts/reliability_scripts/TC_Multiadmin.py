@@ -21,13 +21,13 @@ from mobly import asserts
 import chip.clusters as Clusters
 
 from matter_qa.library.base_test_classes.matter_qa_base_test_class import MatterQABaseTestCaseClass
-from matter_qa.library.helper_libs.multiadmin import build_controller_object, controller_pairing
+from matter_qa.library.helper_libs.multiadmin import Mutliadmin
 from matter_qa.library.helper_libs.matter_testing_support import async_test_body, default_matter_test_main
 from matter_qa.library.helper_libs.exceptions import TestCaseError, TestCaseExit
 from matter_qa.library.base_test_classes.test_results_record import TestResultEnums
 
 
-class TC_Multiadmin(MatterQABaseTestCaseClass):
+class TC_Multiadmin(MatterQABaseTestCaseClass, Mutliadmin):
 
     def __init__(self, *args):
         #Todo move this into some meta data
@@ -61,10 +61,10 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
                 # Th1 is aldeary paired using res
                 for fabric in range(1, self.max_fabric_supported_by_dut):
                     unique_controller_id = self.create_unique_controller_id(fabric)
-                    controller_object = build_controller_object(unique_controller_id)
+                    controller_object = self.build_controller_object(unique_controller_id)
                     unique_node_id = self.create_unique_node_id(fabric)
                     commissioning_parameters = self.openCommissioningWindow(dev_ctrl = self.default_controller, node_id = unique_node_id)
-                    controller_pairing(controller_object, unique_controller_id ,commissioning_parameters)
+                    self.controller_pairing(controller_object, unique_controller_id ,commissioning_parameters)
                     list_of_paired_controllers.append(controller_object)
             except Exception as e:
                 self.iteration_test_result == TestResultEnums.TEST_RESULT_FAIL
