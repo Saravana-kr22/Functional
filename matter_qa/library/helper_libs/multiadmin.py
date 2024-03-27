@@ -27,7 +27,7 @@ class Mutliadmin(MatterBaseTest):
             tb = traceback.format_exc()
             raise TestCaseError(str(e), tb)
             
-    async def controller_pairing(controller_object ,nodeid, commissioning_parameters):
+    async def controller_pairing(self,controller_object ,nodeid, commissioning_parameters):
         try:
             dutnodeid = nodeid
             logging.info('TH1 opens a commissioning window')
