@@ -1,0 +1,171 @@
+/**
+ *
+ * Copyright (c) 2023 Project CHIP Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+.graph_container{
+    margin: auto;
+    /* width: 70%; */
+    background-color: #edecec;
+    padding: 10px;
+    width: auto;
+    overflow: hidden;
+  }
+  .tooltip {
+          position: absolute;
+          background-color: white;
+          border: 1px solid #ddd;
+          padding: 10px;
+          opacity: 0;
+      }
+  .width .height{
+      margin:auto;
+  
+  }
+  .main_container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .row1 {
+    flex: 0.25;
+  }
+  .row2 {
+    flex: 1;
+    background-color:rgb(241, 241, 245);
+  }
+  #container{
+    overflow: hidden;
+  
+  }
+
+  /* Styling for labels */
+  label {
+    display: block; 
+    margin-bottom: 5px;
+  }
+  #div1 {
+    display: inline-block;
+    vertical-align: top; /* Align to the top */
+    margin-right: 20px; /* Add some spacing between the divs */
+  }
+  
+  /* Style for the second div with ten labels */
+  #div2 {
+    display: inline-block;
+    vertical-align: top; /* Align to the top */
+    position: fixed;
+  }
+  
+  input{
+  box-sizing: border-box;
+  width: 30%;
+  }
+  button {
+    box-sizing: border-box;
+    width: 50%; /* Set button width to 100% of the parent width */
+    padding: 10px; /* Add padding as needed */
+    font-size: 16px; /* Set font size as needed */
+  }
+  select{
+    width: 100%; /* Set button width to 100% of the parent width */
+    padding: 10px; /* Add padding as needed */
+    font-size: 16px
+  }
+  .graph_styling{
+    display: inline-block;
+    vertical-align: top;
+    margin: 10px; /* Set the margin for spacing between div elements */
+    border: 1px solid #000000; /* Add a border around each div */
+    box-sizing: border-box;
+    padding: 10px;
+    overflow: auto;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+  .card {
+    display: inline-block;
+    margin-right: 10px;
+    overflow: scroll; /* Adjust margin as needed */
+    
+  }
+  .button-layout{
+    width: 90%;
+    background-color: rgb(255, 255, 255);
+    justify-content: center;
+    margin: auto;
+    padding: 0.5%;
+  }
+.graph_whole_container {
+  width: 80%;
+  float: right;
+  height: 100vh;
+  overflow-x: scroll;
+  overflow-y: scroll; 
+  background: #EFF0F1;
+  overflow: scroll;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.tree_container {
+  width: 20%;
+  /* float: right; */
+  height: 100vh;
+  overflow-x: scroll;
+  overflow-y: scroll; 
+  background: #EFF0F1;
+  overflow: scroll;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+/* .card_container{
+  top: 0;
+  margin: auto;
+  background-color: aqua;
+  position:fixed;
+  overflow-x: scroll;
+  overflow-y: scroll; 
+  
+} */
+
+
+.main_wrapper{
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  /* overflow: hidden; */
+}
+
+.main_wrapper .sidebar{
+  width: 10%;
+}
+
+.main_wrapper .main_div{
+  width: 90%;
+}
+
+.summary_table .card{
+  width: 100%!important;
+  height: 500px;
+}
+
+.summary_table .btn-group{
+  margin-right: 5px;
+}
+
+.tab_wrapper{
+  height: 100%;
+}
+
+html{
+  overflow: hidden;
+}

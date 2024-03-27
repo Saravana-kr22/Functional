@@ -143,5 +143,5 @@ class Raspi(BaseDutNodeClass):
         time.sleep(2)
     
     def post_iteration_loop(self):
-        self.stop_event.set()
+        self.factory_reset_dut()
         time.sleep(5)

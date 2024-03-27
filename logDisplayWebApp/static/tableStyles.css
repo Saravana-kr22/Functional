@@ -1,0 +1,176 @@
+/**
+ *
+ * Copyright (c) 2023 Project CHIP Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* styles.css */
+
+.card{
+    padding: 5px;
+    width: 70%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 20px;
+}
+.table{
+    overflow-y: auto;
+    height: 100px;
+}
+h1 {
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+    color: #333;
+    padding: 30px
+}
+
+
+.scrollable-table-summary {
+      max-height: 460px; /* Adjust the maximum height as needed */
+      overflow-y: auto;
+
+    }
+  .scrollable-table-device-info{
+      max-height: 450px; /* Adjust the maximum height as needed */
+      overflow-y: auto;
+  }
+/* table.summary-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+table.basic-info-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+} */
+.script_table{
+    width: 40%;
+    border-collapse: collapse;
+    margin: auto;
+    margin-top: 20px;
+}
+/* .script_table td, .script_table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+
+} */
+#title{
+    background-color: #515151;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    color: #ffff;
+}
+#basic_info_title{
+    background-color:  #515151;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    color: #ffff;
+}
+/* Set a fixed width for each table */
+.table-container {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    gap: 1%; /*  gap between tables  */
+    /* width: 10%; */
+    margin-left: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding-bottom: 1%;
+    font-size: small;
+    
+}
+
+.pagination .page-link {
+            background-color: #3396ff; /* Bootstrap blue color */
+            border-color: #3396ff;
+            color: #fff; /* White text color */
+        }
+
+.pagination .page-link:hover {
+            background-color: #0056b3; /* Slightly darker blue on hover */
+            border-color: #0056b3;
+            color: #fff; /* White text color on hover */
+        }
+.pagination {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Center the items horizontally */
+        }
+
+.main_wrapper{
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    /* overflow: hidden; */
+}
+
+.main_wrapper .sidebar{
+    width: 10%;
+}
+
+.main_wrapper .main_div{
+    width: 90%;
+}
+
+.summary_table .card{
+    width: 99%!important;
+  height: 930px;
+  overflow-y: scroll;
+  font-size: small;
+}
+
+.summary_table .btn-group{
+    margin-right: 5px;
+}
+
+.tab_wrapper{
+    height: 100%;
+}
+
+.data_table_btn{
+    width: 150px;
+    margin-bottom: 8px;
+}
+
+#analytics_graph_id{
+    height: 500px;
+    overflow: auto;
+}
+
+html{
+    overflow: hidden;
+  }
+
+.btn_table_filter{
+    width: 120px;
+}
+
+.btn_table_filter.small_btn{
+    width: 24px;
+}
+#basic_info_index.card{
+    max-height: 700px;
+    overflow-y: auto;
+}
+#basic_info_text_case_index.card{
+    max-height: 700px;
+    overflow-y: auto;
+}
+#log_select_index.card{
+    max-height: 700px;
+    overflow-y: auto;
+}

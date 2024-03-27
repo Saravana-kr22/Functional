@@ -1,0 +1,6 @@
+host: 0.0.0.0
+port: 5000
+workers: 1 # used for scaling
+logs_path: /media/grl/CommonData/logs_matter_3
+#python_environment: /media/grl/CommonData/matter_python/no
+#script_path: /media/grl/CommonData/matter_python/src/python_testing/Matter_QA/Scripts/ReliabilityScripts

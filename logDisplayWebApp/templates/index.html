@@ -1,0 +1,82 @@
+<!--/**
+ *
+ * Copyright (c) 2023 Project CHIP Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='tableStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='alerts.css') }}">
+    <script src="{{ url_for('static', path='alerts.js') }}"></script>
+    <title>Matter Chip Log viewer</title>
+</head>
+<body>
+    <div class="d-flex main_wrapper">
+        {% include "navigation_bar.html" %}
+        <div class="main_div ms-5">
+            <h1>Matter Chip Test execution log viewer</h1>
+            <center>
+                <div id="basic_info_index" class="card">
+                    <table class="table table-hover table-scrollable">
+                        <thead>
+                            <tr>
+                                <th>Test Log Folder name</th>
+                                <th>Last modified</th>
+                                <th>Folder Size</th>
+                                <th>Folder Operations</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dirs in dir_list %}
+                                <tr>
+                                    <td>
+                                        <form action="/home/test_cases_index" method="get">
+                                        <input type="hidden" value={{ dirs.dir_path }} name="dir_path">
+                                        <button class="btn btn-primary" type="submit"><span class="fa fa-folder-open"></span> {{dirs.dir_name}}</button>
+                                        </form>
+                                    </td>
+                                    <td>{{ dirs.dir_last_modified }}</td>
+                                    <td>{{ dirs.dir_size }}</td>
+                                    <td>
+                                        <button class="btn btn-success" onclick="fileFetch('{{log_dir}}','{{dirs.dir_name}}','zip')"><span class="fa fa-download"> Download </span></button>
+                                        <button class="btn btn-danger" onclick="fileFetch('{{log_dir}}','{{dirs.dir_name}}','delete')"><span class="fa fa-trash"></span> Delete </button>
+                                    </td>
+                                     
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        </table>
+                </div>
+            </center>
+
+            
+        </div>
+    </div>
+    
+    
+<div id="customDialog" class="custom-dialog">
+    <p>Are you sure you want to delete?</p>
+    <button id="ok">OK</button>
+    <button id="cancel">Cancel</button>
+</div>
+
+<!-- Overlay background -->
+<div id="overlay" class="overlay"></div>
+
+</body>
+</html>
