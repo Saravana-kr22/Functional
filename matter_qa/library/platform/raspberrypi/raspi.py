@@ -111,7 +111,8 @@ class Raspi(BaseDutNodeClass):
         return True
 
     def start_logging(self, file_name):
-        pass
+        #TODO used this as of now need to updated
+        self.pre_iteration_loop()
 
     def _start_logging(self, raspi_log, file_name=None):
 
