@@ -3,10 +3,11 @@ import time
 import traceback
 
 from matter_qa.library.helper_libs.matter_testing_support import MatterBaseTest, DiscoveryFilterType
+from matter_qa.library.base_test_classes.matter_qa_base_test_class import MatterQABaseTestCaseClass
 from matter_qa.library.helper_libs.exceptions import TestCaseError
 
 
-class Mutliadmin(MatterBaseTest):
+class Mutliadmin(MatterQABaseTestCaseClass):
     def __init__(self, *args):
         super().__init__(*args)
 
