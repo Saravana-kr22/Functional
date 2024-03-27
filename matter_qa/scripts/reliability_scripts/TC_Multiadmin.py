@@ -51,9 +51,8 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
             # This object is used to create a new empty list in CA Index
             th_certificate_authority = self.certificate_authority_manager.NewCertificateAuthority()
             th_fabric_admin = th_certificate_authority.NewFabricAdmin(vendorId=0xFFF1, fabricId= controller_id + 1)           
-            thnodeid = controller_id
-            th = th_fabric_admin.NewController(thnodeid)
-            return th
+            controller_object = th_fabric_admin.NewController(controller_id)
+            return controller_object
         # This execption will be catched if the we unable to build the controller
         except Exception as e:
             logging.error(f"Failed to build the controller for {controller_id} with error {str(e)}"
@@ -105,17 +104,18 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
                     controller_object = self.build_controller_object(unique_controller_id)
                     unique_node_id = self.create_unique_node_id(fabric)
                     commissioning_parameters = self.openCommissioningWindow(dev_ctrl = self.default_controller, node_id = unique_node_id)
-                    self.controller_pairing(controller_object, unique_controller_id ,commissioning_parameters)
+                    await self.controller_pairing(controller_object, unique_controller_id ,commissioning_parameters)
                     list_of_paired_controllers.append(controller_object)
             except Exception as e:
                 self.iteration_test_result == TestResultEnums.TEST_RESULT_FAIL
-            try:
-                for controller_object in list_of_paired_controllers:
-                    self.unpair_dut(controller_object,self.unique_controller_id(list_of_paired_controllers.index(controller_object)+1))
-                    controller_object.Shutdown()
-            except Exception as e:
-                tb = traceback.format_exc()
-                raise TestCaseExit(str(e), tb)
+            if list_of_paired_controllers:
+                try: 
+                    for controller_object in list_of_paired_controllers:
+                        self.unpair_dut(controller_object,self.unique_controller_id(list_of_paired_controllers.index(controller_object)+1))
+                        controller_object.Shutdown()
+                except Exception as e:
+                    tb = traceback.format_exc()
+                    raise TestCaseExit(str(e), tb)
             await self.fetch_analytics_from_dut()
                 
         await tc_multi_fabric(self)
