@@ -92,7 +92,6 @@ class NordicDut(BaseDutNodeClass):
                                             str(datetime.datetime.now().isoformat()).replace(':', "_").replace('.', "_")
                                             + ".log"
                                             )
-                        
                         logging.info("started to read buffer")
                         dut_log = self.serial_session.serial_object.read_until(b'Test-iteration completed').decode()
                         logging.info("completed read from buffer")
@@ -100,11 +99,11 @@ class NordicDut(BaseDutNodeClass):
                             log.info("data not present in buffer breaking from read loop")
                             break
                         with open(log_file, 'w') as fp:
-                            fp.write(f" \n\n  Dut log of {self.test_config.current_iteration} iteration \n")
+                            fp.write(f" \n\n  Dut log of {self.test_config.current_iteration -1} iteration \n")
                             fp.write(dut_log)
                             logging.info("completed write to file")
                     except Exception as e:
-                        log.info(f"Waiting for current_iteration to be assigned, {e}")
+                        log.error(e, exc_info=True)
             self.serial_session.close_serial_connection()
         else:
             log.info("Failed to read the log in thread")
@@ -115,9 +114,6 @@ class NordicDut(BaseDutNodeClass):
         global event_closer
         event_closer.set()
         return True
-    
-    def pre_testcase_loop(self):
-        pass
     
     def pre_iteration_loop(self):
         pass

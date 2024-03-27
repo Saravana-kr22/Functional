@@ -13,7 +13,7 @@ class TestCaseError(ReliabiltyTestError):
         super().__init__(*args)
         self.test_case_kwarg = kwargs.get('test_case_kwarg',None)
 
-class BuildControllerError(ReliabiltyTestError):
+class TestExitError(ReliabiltyTestError):
     def __init__(self, *args, **kwargs):
         super().__init__(*args)
         self.test_case_kwarg = kwargs.get('test_case_kwarg')

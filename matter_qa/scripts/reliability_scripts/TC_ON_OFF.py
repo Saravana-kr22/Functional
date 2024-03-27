@@ -82,4 +82,4 @@ class TC_ON_OFF(MatterQABaseTestCaseClass):
         self.dut.factory_reset_dut()
 
 if __name__ == "__main__":
-    default_matter_test_main(testclass=TC_ON_OFF, do_not_commision_first=True)
+    default_matter_test_main(testclass=TC_ON_OFF)

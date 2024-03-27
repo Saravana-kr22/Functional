@@ -22,7 +22,7 @@ class SerialConnection:
             self.serial_object.write(command)
             self.serial_object.flush()
         except Exception as e:
-            self.logger.error(str(e), exc_info=True)
+            self.log.error(str(e), exc_info=True)
 
     def open_serial_connection(self):
         try:

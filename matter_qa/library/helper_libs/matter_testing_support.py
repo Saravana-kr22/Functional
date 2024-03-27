@@ -716,18 +716,16 @@ class MatterBaseTest(base_test.BaseTestClass):
         else:
             raise ValueError("Invalid commissioning method %s!" % conf.commissioning_method)
 
-    def openCommissioningWindow(self) -> dict:
-        # This function is used to Open the commisioning window
+    def openCommissioningWindow(self, dev_ctrl: ChipDeviceCtrl, node_id: int) -> CustomCommissioningParameters:
         rnd_discriminator = random.randint(0, 4095)
         try:
-            commissioning_params = self.th1.OpenCommissioningWindow(nodeid=self.dut_node_id, timeout=self.commissioning_timeout, iteration=1000,
+            commissioning_params = dev_ctrl.OpenCommissioningWindow(nodeid=node_id, timeout=900, iteration=1000,
                                                                     discriminator=rnd_discriminator, option=1)
-            customcommissioningparameters = CustomCommissioningParameters(commissioning_params, rnd_discriminator)
-            return {"status":"Success","commissioning_parameters": customcommissioningparameters}
+            params = CustomCommissioningParameters(commissioning_params, rnd_discriminator)
+            return params
 
-        except ChipStackError as e:
-            logging.error(f"Failed to open the commissioning window :{str(e)}", exc_info=True)
-            return {"status": "failed","failure_reason":str(e)}
+        except InteractionModelError as e:
+            asserts.fail(e.status, 'Failed to open commissioning window')
 
 
 def generate_mobly_test_config(matter_test_config: MatterTestConfig):

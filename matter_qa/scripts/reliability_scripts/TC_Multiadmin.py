@@ -15,15 +15,19 @@
 #  limitations under the License.
 #
 import logging
-import gc
+import traceback
+from mobly import asserts
 
+import chip.clusters as Clusters
 
 from matter_qa.library.base_test_classes.matter_qa_base_test_class import MatterQABaseTestCaseClass
-from matter_qa.library.helper_libs.multiadmin import Multi_Admin
+from matter_qa.library.helper_libs.multiadmin import build_controller, controller_pairing
 from matter_qa.library.helper_libs.matter_testing_support import async_test_body, default_matter_test_main
-from matter_qa.library.helper_libs.exceptions import TestCaseError, BuildControllerError, IterationError
+from matter_qa.library.helper_libs.exceptions import TestCaseError, TestExitError
+from matter_qa.library.base_test_classes.test_results_record import TestResultEnums
 
-class TC_Multiadmin(Multi_Admin):
+
+class TC_Multiadmin(MatterQABaseTestCaseClass):
 
     def __init__(self, *args):
         #Todo move this into some meta data
@@ -31,51 +35,44 @@ class TC_Multiadmin(Multi_Admin):
         self.tc_id = "stress_1_2"
         super().__init__(*args)
 
+    def unique_controller_id(self, controller_id):
+        return controller_id + ((self.test_config.current_iteration-1) * self.self.max_controller)
+
     @async_test_body
     async def test_tc_multi_fabric(self):
-        # For checking the number of controlers is supported by dut
-        await self.check_the_no_of_controllers_are_in_range()
-        # For checking the commissioning_window_timeout is in range
-        self.check_commissioning_window_timeout()
+        self.dut.factory_reset_dut()
+        try:
+            self.dut.start_logging()
+            self.pair_dut()
+        except TestCaseError as e:    
+            self.dut.factory_reset_dut()
+            asserts.fail("Failed to commission the TH1")
+            
         @MatterQABaseTestCaseClass.iterate_tc(iterations=self.test_config.general_configs.number_of_iterations)
         async def tc_multi_fabric(*args,**kwargs):
+            list_of_controllers = []
             try:
-                list_of_controllers = []
-                # Controller which are paired will be stored in this list
-                list_of_paired_controller_index = []
-                for controller_id_itr in range(1, int(self.number_of_controllers)+1):
-                    # This condition is used to check the build controled is completed successfully
-                    try:
-                        controller_build_result = self.build_controller(controller_id_itr)
-                    except BuildControllerError:
-                        if not self.test_config.general_configs.continue_excution_on_fail:
-                            #TODO needs to update after the harsith work
-                            raise TestCaseError(e)
-                        continue
-                    controller_details_dict = controller_build_result.get("dev_controller_dict")
-                    # List contains the controller objects
-                    list_of_controllers.append(controller_details_dict)
-                    self.current_controller =  controller_id_itr
-                    paring_result_dict = await self.controller_pairing(controller_details_dict)
-                    if paring_result_dict.get("status") == "failed":
-                        paring_result = paring_result_dict.get("failure_reason")
-                        logging.error("Failed to Commission the controller for {} in {} iteration with th error : {}"
-                                    .format(list_of_controllers.index(controller_details_dict)+1,self.test_config.current_iteration, paring_result), exc_info=True)
-                        await self.pairing_failure(str(paring_result))
-                        continue
-                    logging.info("Successfully commissioned the {}-controller of {} iteration".format(controller_id_itr, self.test_config.current_iteration))
-                    # List contains the paired controllers node-id 
-                    list_of_paired_controller_index.append(controller_details_dict.get("DUT_node_id"))
-                await self.shutdown_all_controllers(list_of_controllers,list_of_paired_controller_index)
-                gc.collect()
-                # This condition will check for the result of the iteration is pass/fail
-                if not list_of_paired_controller_index:
-                    raise IterationError(e)        
-            except Exception as e:
-                #TODO fix need after harsith code
-                raise IterationError(e)
+                self.max_controller = await self.read_single_attribute(self.default_controller, self.dut_node_id,0,
+                                                        Clusters.OperationalCredentials.Attributes.SupportedFabrics)
+                for controller_id in range(1, self.max_controller):
+                    th = build_controller(self.unique_controller_id(controller_id))
+                    commissioning_parameters = self.openCommissioningWindow()
+                    controller_pairing(th,self.unique_controller_id(controller_id),commissioning_parameters)
+                    list_of_controllers.append(th)
             
+            except Exception as e:
+                self.iteration_test_result == TestResultEnums.TEST_RESULT_FAIL
+            
+            try:
+                for controller in list_of_controllers:
+                    self.unpair_dut(controller,self.unique_controller_id(list_of_controllers.index(controller)+1))
+                    controller.Shutdown()
+
+            except Exception as e:
+                tb = traceback.format_exc()
+                raise TestExitError(str(e), tb)
+                
         await tc_multi_fabric(self)
         self.dut.factory_reset_dut()
 if __name__ == "__main__":
-    default_matter_test_main(testclass=TC_Multiadmin,do_not_commision_first=True )
+    default_matter_test_main(testclass=TC_Multiadmin)
