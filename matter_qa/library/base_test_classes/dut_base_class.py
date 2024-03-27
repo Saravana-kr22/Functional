@@ -23,7 +23,7 @@ class BaseDutNodeClass(ABC):
         pass
 
     @abstractmethod
-    def stop_logging(self,,*args,**kwargs):
+    def stop_logging(self,*args,**kwargs):
         pass
 
     @abstractmethod
