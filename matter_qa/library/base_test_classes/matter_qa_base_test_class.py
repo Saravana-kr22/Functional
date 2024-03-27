@@ -227,11 +227,10 @@ class MatterQABaseTestCaseClass(MatterBaseTest):
                     self.pre_iteration()
                     self.test_config.current_iteration = self.current_iteration
                     try:
-                        result = await func(*args, **kwargs)
-                        iteration_test_result = TestResultEnums.TEST_RESULT_PASS
-                        self.update_analytics()
-                    except IterationError as e:
-                        print("I got exception, failed iteration {}".format(current_iteration))
+                        #result = func(*args, **kwargs)
+                        await func(*args, **kwargs)
+                    except (IterationError,TestCaseError) as e:
+                        print("I got exception, failed iteration {}".format(self.current_iteration))
                         logging.error(e, exc_info=True)
                         self.update_iteration_logs()
                         iteration_test_result = TestResultEnums.TEST_RESULT_FAIL
@@ -325,7 +324,7 @@ class MatterQABaseTestCaseClass(MatterBaseTest):
             time.sleep(3)
             log.info("unpair_dut completed successfully")
             return True
-
+        
         except Exception as e:
             logging.error(e, exc_info=True)
             unpair_result = {"status": "failed", "failed_reason": e.msg}

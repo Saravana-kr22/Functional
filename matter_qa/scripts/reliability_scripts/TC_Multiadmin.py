@@ -40,8 +40,8 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
 
     @async_test_body
     async def test_tc_multi_fabric(self):
-        self.dut.factory_reset_dut()
         try:
+            self.dut.factory_reset_dut()
             self.dut.start_logging()
             self.pair_dut()
         except TestCaseError as e:    
