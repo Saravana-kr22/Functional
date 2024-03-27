@@ -235,6 +235,7 @@ class MatterQABaseTestCaseClass(MatterBaseTest):
                         self.update_iteration_logs()
                         iteration_test_result = TestResultEnums.TEST_RESULT_FAIL
                         #return result# you dont need this
+                    except 
                     self.post_iteration()
                 self.end_of_test()
             return wrapper

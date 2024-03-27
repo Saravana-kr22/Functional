@@ -41,6 +41,9 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
     def create_unique_node_id(self, fabric):
         #To create a unquie node_id for each controller
         return self.dut_node_id + fabric + ((self.test_config.current_iteration-1) * self.max_fabric_supported_by_dut)
+
+    def find_dut_node_id(self, controller_index):
+        return self.dut_node_id + controller_index + ((self.test_config.current_iteration-1) * self.max_fabric_supported_by_dut)+1
     
     def build_controller_object(self, controller_id):
         # This function is used to build the controllers
@@ -77,6 +80,16 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
         except Exception as e:
             logging.error(e, exc_info=True)
             raise TestCaseError(str(e))
+        
+    def decommission_the_paired_controller(self, list_of_paired_controllers):
+        try: 
+            for controller_object in list_of_paired_controllers:
+                dut_node_id = self.find_dut_node_id(list_of_paired_controllers.index(controller_object))
+                self.unpair_dut(controller_object,dut_node_id)
+                controller_object.Shutdown()
+        except Exception as e:
+            logging.error("Failed to unpair the controller{}".format(e), exc_info=True)
+            raise TestCaseExit(str(e))
 
     @async_test_body
     async def test_tc_multi_fabric(self):
@@ -103,14 +116,7 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
                     list_of_paired_controllers.append(controller_object)
             except Exception as e:
                 self.iteration_test_result == TestResultEnums.TEST_RESULT_FAIL
-            if list_of_paired_controllers:
-                try: 
-                    for controller_object in list_of_paired_controllers:
-                        self.unpair_dut(controller_object,self.unique_controller_id(list_of_paired_controllers.index(controller_object)+1))
-                        controller_object.Shutdown()
-                except Exception as e:
-                    tb = traceback.format_exc()
-                    raise TestCaseExit(str(e), tb)
+            self.decommission_the_paired_controller(list_of_paired_controllers)
             await self.fetch_analytics_from_dut()
                 
         await tc_multi_fabric(self)
