@@ -11,7 +11,7 @@ def build_controller_object( controller_id):
     try:
         logging.info(f'Controller node id for controller-{controller_id}') 
         # This object is used to create a new empty list in CA Index
-        th_certificate_authority = CertificateAuthorityManager.NewCertificateAuthority()
+        th_certificate_authority = CertificateAuthorityManager().NewCertificateAuthority()
         th_fabric_admin = th_certificate_authority.NewFabricAdmin(vendorId=0xFFF1, fabricId= controller_id + 1)           
         thnodeid = controller_id
         th = th_fabric_admin.NewController(thnodeid)
