@@ -40,7 +40,7 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
     
     def create_unique_node_id(self, fabric):
         #To create a unquie node_id for each controller
-        return fabric + ((self.test_config.current_iteration-1) * self.max_fabric_supported_by_dut)
+        return self.dut_node_id + fabric + ((self.test_config.current_iteration-1) * self.max_fabric_supported_by_dut)
     
     def build_controller_object(self, controller_id):
         # This function is used to build the controllers
@@ -69,6 +69,7 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
             paring_result = controller_object.CommissionOnNetwork(
                             nodeId=nodeid, setupPinCode=setup_pincode,
                             filterType=DiscoveryFilterType.LONG_DISCRIMINATOR, filter=discriminator)
+            
             if not paring_result.is_success:
                 logging.error("Failed to pair waiting for commissioning window to close")
                 raise TestCaseError(str(paring_result))
@@ -96,8 +97,8 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
                 for fabric in range(1, self.max_fabric_supported_by_dut):
                     unique_controller_id = self.create_unique_controller_id(fabric)
                     controller_object = self.build_controller_object(unique_controller_id)
-                    unique_node_id = self.create_unique_node_id(fabric)
                     commissioning_parameters = self.openCommissioningWindow(dev_ctrl = self.default_controller, node_id = self.dut_node_id)
+                    unique_node_id = self.create_unique_node_id(fabric)
                     await self.controller_pairing(controller_object, unique_node_id ,commissioning_parameters)
                     list_of_paired_controllers.append(controller_object)
             except Exception as e:
