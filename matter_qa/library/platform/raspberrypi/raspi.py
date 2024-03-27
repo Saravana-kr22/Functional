@@ -112,7 +112,11 @@ class Raspi(BaseDutNodeClass):
         return True
 
     def start_logging(self, file_name, *args, **kwargs):
-        pass
+        self.stop_event = threading.Event()
+        self.thread = threading.Thread(target=self._start_matter_app)
+        self.thread.start()
+        self.reset_dut_each_iteration = False
+        time.sleep(2)
 
     def _start_logging(self, raspi_log, file_name=None):
 
