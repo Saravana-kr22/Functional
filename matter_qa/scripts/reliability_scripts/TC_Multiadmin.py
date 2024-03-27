@@ -64,7 +64,7 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
             dutnodeid = nodeid
             logging.info('TH1 opens a commissioning window')
             #Setuppincode for the current controller
-            setuppincode = commissioning_parameters.setupPinCode
+            setuppincode = commissioning_parameters.commissioningParameters.setupPinCode
             #discriminator for the current controller
             discriminator = commissioning_parameters.randomDiscriminator
             logging.info(f'Commissioning process with DUT has been initialized')
