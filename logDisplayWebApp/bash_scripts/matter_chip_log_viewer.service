@@ -1,0 +1,11 @@
+[Unit]
+Description=A Web application to run and view Reliability Tests
+
+
+[Service]
+User=grl
+WorkingDirectory=/media/grl/CommonData/restruct_code/Functional/logDisplayWebApp
+ExecStart=/media/grl/CommonData/matter_python/no/bin/python3.10 /media/grl/CommonData/restruct_code/Functional/logDisplayWebApp/LogDisplay.py
+
+[Install]
+WantedBy=default.target

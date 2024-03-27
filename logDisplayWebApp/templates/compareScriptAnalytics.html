@@ -1,0 +1,81 @@
+<!--/**
+ *
+ * Copyright (c) 2023 Project CHIP Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Compare Script Analytics</title>
+    <script defer id="data" type="application/json">{{test_case_details | tojson}}</script>
+    <link rel="stylesheet" href="{{ url_for('static', path='bootstrap/css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', path='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', path='jquery/jquery-3.7.1.min.js') }}"></script>
+    <script defer src="{{ url_for('static', path='compareGraphs.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='compareGraph.css') }}">
+    <script src="{{url_for('static',path='d3_js/d3.v7.min.js')}}"></script>
+    <script src="{{url_for('static',path='tree_js/tree.min.js')}}"></script>
+    <style>
+        .center_div {
+            display: block;
+            align-items: center;
+            justify-content: center;
+            width: 50%;
+            height: 300px;
+            overflow: auto;
+            border: 1px solid #ccc;
+            margin: auto;
+            padding: 10px;
+            margin-top: 50px;
+
+        }
+        .tree_container ul{
+            line-height: 40px;
+        }
+        
+        
+    </style>
+</head>
+<body>
+
+<div class="d-flex main_wrapper">
+    {% include "navigation_bar.html" %}
+    <div class="main_div">
+        <div class="graph_whole_container">
+            <div class="main_container">
+                <div class="row2">
+                    <div class="graph_container">
+                        <div id="container">
+                        <p id="zoomLevel">Graph Zoom Level: 1 </p>
+                        <p id="zoom-refactor-p" >Zoom Re-Factor: <span id="zoom-refactor-edit" value="10">10</span> <span id="zoom-edit-button" class="fa fa-edit"></span> </p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="tree_container">
+            <div class="tree-container">
+            </div>
+                <center>
+                    <button class="btn btn-primary mt-3 btn-sm" onclick="printSelectedItems()">Generate Graph</button>
+                </center>
+        </div>
+    </div>
+
+</div>    
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!--/**
+ *
+ * Copyright (c) 2023 Project CHIP Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='tableStyles.css') }}">
+    <script src="{{ url_for('static', path='displayLogs.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='bootstrap/css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', path='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{url_for('static',path='d3_js/d3.v7.min.js')}}"></script>
+    <script defer id="data" type="application/json">{{summary | tojson}}</script>
+    <title>Summary Data Table</title>
+</head>
+
+<body>
+    <!-- Table to display data -->
+    <div class="main_wrapper">
+        {% include "navigation_bar.html" %}
+        <div class="main_div">
+
+        <!-- <h1>Summary of Executions</h1> -->
+        <div class="row">
+            <div class="col-3">
+                <div class="table-container">
+                    <div id="summary-table" class="scrollable-table-summary">
+                    <table class="table summary-table table-hover">
+                        <thead>
+                            <tr>
+                                <th id="title" scope="col" colspan="2">
+                                   Execution Summary
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Script Name</td>
+                                <td>{{ summary["test_summary_record"]["test_case_name"] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Test Id</td>
+                                <td>{{ summary["test_summary_record"]["test_case_id"] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Test Start time</td>
+                                <td>{{ summary["test_summary_record"]["test_case_begined_at"] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Test End Time</td>
+                                <td>{{ summary["test_summary_record"]["test_case_ended_at"] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Current Status</td>
+                                <td>{{ summary["test_summary_record"]["test_case_status"] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Iterations</td>
+                                <td>{{ summary["test_summary_record"]["total_number_of_iterations"] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Completed Iterations</td>
+                                <td>{{ summary["test_summary_record"]["number_of_iterations_completed"] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Iterations PASSED</td>
+                                <td>{{ summary["test_summary_record"]["number_of_iterations_passed"] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Iterations FAILED</td>
+                                <td>{{ summary["test_summary_record"]["number_of_iterations_failed"] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Execution Platform</td>
+                                <td>{{ summary["test_summary_record"]["platform"] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Commissioning Method</td>
+                                <td>{{ summary["test_summary_record"]["commissioning-method"] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </div>
+            <div id="basic-device-info" class="scrollable-table-device-info">
+                    <table class=" table basic-info-table table-hover">
+                        <thead>
+                            <tr>
+                                <th id="basic_info_title" scope="col" colspan="2">
+                                    Device Basic Information
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for dev_data in summary["dut_information_record"]%}
+                            <tr>
+                                <td>{{dev_data.upper()}}</td>
+                                <td>{{ summary["dut_information_record"][dev_data] }}</td>
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+            </div>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="summary_table d-flex flex-column">
+                    <div>
+                        <div class="d-flex justify-content-center my-2">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-secondary btn_table_filter">Table Rows</button>
+                                <button type="button" class="btn btn-secondary btn_table_filter small_btn dropdown-toggle dropdown-toggle-split"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" onchange="location = this.value;">
+                                    <li><a class="dropdown-item"
+                                            href="?page={{current_page}}&page_size='10'&filters={{ current_filter }}&dir_path={{dir_path}}">10</a>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            href="?page={{current_page}}&page_size='20'&filters={{ current_filter }}&dir_path={{dir_path}}">20</a>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            href="?page={{current_page}}&page_size='50'&filters={{ current_filter }}&dir_path={{dir_path}}">50</a>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            href="?page={{current_page}}&page_size='100'&filters={{ current_filter }}&dir_path={{dir_path}}">100</a>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            href="?page={{current_page}}&page_size=all_rows&filters={{ current_filter }}&dir_path={{dir_path}}">All Rows</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-secondary btn_table_filter">Filter</button>
+                                <button type="button" class="btn btn-secondary btn_table_filter  small_btn dropdown-toggle dropdown-toggle-split"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" onchange="location = this.value;">
+                                    <li><a class="dropdown-item"
+                                            href="?page={{current_page}}&page_size={{ current_page_size }}&filters=all&dir_path={{dir_path}}">All</a>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            href="?page={{current_page}}&page_size={{ current_page_size }}&filters=pass&dir_path={{dir_path}}">Pass</a>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            href="?page={{current_page}}&page_size={{ current_page_size }}&filters=fail&dir_path={{dir_path}}">Fail</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-secondary" onclick="enlargedlineChart('{{dir_path}}')"> View Graph</button>
+                            </div>
+                        </div>
+                        <div class="card overflow-x-scroll">
+                            <table class="table table-hover overflow-x-scroll">
+                                <thead>
+                                    <tr>
+                                        <th>Iteration Number</th>
+                                        <th>Test Result</th>
+                                        <th>Iteration Duration</th>
+                                        <th>Error Reason</th>
+                                        {% for analytic_parameter in summary["test_summary_record"]["analytics_parameters"] %}
+                                            <th>{{analytic_parameter.upper()}}</th>
+                                        {% endfor %}
+
+                                        <th>Logs</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in table_data %}
+                                    <tr>
+                                        <td>{{ row.dir_name }}</td>
+                                        <td class="{{ 'table-success' if row.iteration_data.iteration_tc_execution_data.iteration_result == 'PASS' else 'table-danger' }}">{{ row.iteration_data.iteration_tc_execution_data.iteration_result }}</td>
+                                        <td>{{ row.iteration_duration }}</td>
+                                        <td>
+                                            {{ '' if row.iteration_data.iteration_tc_execution_data.iteration_result == 'PASS' else
+                                            row.iteration_data.iteration_tc_execution_data.exception }}</td>
+                                            {% for analytic_parameter in row["iteration_data"]["iteration_tc_analytics_data"] %}
+                                                <td>{{row["iteration_data"]["iteration_tc_analytics_data"][analytic_parameter]}}</td>
+                                            {% endfor %}
+                                        <td><button onclick="dutLogsDisplay('{{dir_path}}','{{row.dir_name}}','iter')"
+                                                class="data_table_btn btn btn-primary">Iteration Logs</button>
+                                            <button onclick="dutLogsDisplay('{{dir_path}}','{{row.dir_name}}','dut')"
+                                                class="data_table_btn btn btn-secondary">DUT Logs</button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination pagination-sm justify-content-center" items-per-page="10" max-size="10">
+                                    {% if current_page > 1 %}
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                            href="?page=1&page_size={{ current_page_size }}&filters={{ current_filter }}&dir_path={{dir_path}}">First</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link " aria-label="Previous"
+                                            href="?page={{ current_page - 1 }}&page_size={{ current_page_size }}&filters={{ current_filter }}&dir_path={{dir_path}}"><span
+                                                aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    {% endif %}
+
+                                    {% for page_num in range(1, total_pages + 1) %}
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                            href="?page={{ page_num }}&page_size={{ current_page_size }}&filters={{ current_filter }}&dir_path={{dir_path}}"
+                                            {% if page_num==current_page %}class="active" {% endif %}>{{ page_num }}</a>
+                                    </li>
+                                    {% endfor %}
+
+                                    {% if current_page < total_pages %} <li class="page-item"><a class="page-link"
+                                            href="?page={{ current_page + 1 }}&page_size={{ current_page_size }}&filters={{ current_filter }}&dir_path={{dir_path}}"
+                                            aria-label="Next"> <span aria-hidden="true">&raquo;</span></a></li>
+                                        <li class="page-item"><a class="page-link"
+                                                href="?page={{ total_pages }}&page_size={{ current_page_size }}&filters={{ current_filter }}&dir_path={{dir_path}}">Last</a>
+                                        </li>
+                                        {% endif %}
+
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+</body>
+
+</html>

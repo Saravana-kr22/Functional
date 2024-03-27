@@ -23,10 +23,10 @@ import traceback
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../')))
 
-from matter_qa.library.base_test_classes.matter_qa_base_test_class import MatterQABaseTestCaseClass, test_start
+from matter_qa.library.base_test_classes.matter_qa_base_test_class import MatterQABaseTestCaseClass
 from matter_qa.library.helper_libs.matter_testing_support import async_test_body, default_matter_test_main
 from matter_qa.library.helper_libs.exceptions import TestCaseError
-
+from matter_qa.library.base_test_classes.test_results_record import TestresultsRecord,TestResultEnums
 
 class TC_Pair(MatterQABaseTestCaseClass):
     def __init__(self, *args):
@@ -37,15 +37,22 @@ class TC_Pair(MatterQABaseTestCaseClass):
     
     @async_test_body
     async def test_tc_pair_unpair(self):
+        self.dut.factory_reset_dut()
         @MatterQABaseTestCaseClass.iterate_tc(iterations=self.test_config.general_configs.number_of_iterations)
         async def tc_pair_unpair(*args,**kwargs):
             try:
-                if self.pair_dut():  # pairing operation with DUT begins.
+                pairing_result = self.pair_dut()  # pairing operation with DUT begins.
+                if pairing_result:
                     logging.info('Device has been Commissioned starting pair-unpair operation')
                     time.sleep(2)
+                    await self._fetch_dut_info_once()
+                    await self.update_analytics()
                     self.unpair_dut()  # unpair with commissioned the DUT
+                    self.iteration_test_result = TestResultEnums.TEST_RESULT_PASS
+                    iteration_passed = True
                 self.dut.factory_reset_dut()
             except Exception as e:
+                logging.error("execption occured while execution og tc", exc_info= True)
                 #TODO fix this properly.
                 raise TestCaseError(e)
         await tc_pair_unpair(self)

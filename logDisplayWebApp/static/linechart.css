@@ -1,0 +1,121 @@
+/**
+ *
+ * Copyright (c) 2023 Project CHIP Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+.graph_container{
+  margin: auto;
+  width: 100%;
+  background-color: #818080;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.tooltip {
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ddd;
+        padding: 10px;
+        opacity: 0;
+    }
+.width .height{
+    margin:auto;
+
+}
+.main_container {
+  width: 100%;
+  text-align: center;
+}
+
+#container{
+  overflow: hidden;
+  width:100%
+
+}
+/* Styling for each div */
+.box1 {
+  display: inline-block; /* or use 'float: left;' */
+  width: 70%; /* Adjust the width as needed */
+  margin: 10px;
+  box-sizing: border-box;
+}
+.box2 {
+  display: inline-block; /* or use 'float: left;' */
+  width: 30%; /*Adjust the width as needed*/
+  margin: 10px;
+  box-sizing: border-box;
+  height: 100%;
+}
+.box3 {
+  display: inline-block; /* or use 'float: left;' */
+  width: 10%; /*Adjust the width as needed*/
+  margin: 10px;
+  box-sizing: border-box;
+  height: 100%;
+}
+/* Styling for labels */
+label {
+  display: block; 
+  margin-bottom: 5px;
+}
+#div1 {
+  display: inline-block;
+  vertical-align: top; /* Align to the top */
+  margin-right: 20px; /* Add some spacing between the divs */
+}
+
+/* Style for the second div with ten labels */
+#div2 {
+  display: inline-block;
+  vertical-align: top; /* Align to the top */
+  position: fixed;
+}
+
+input{
+box-sizing: border-box;
+width: 30%;
+}
+button {
+  box-sizing: border-box;
+  width: 50%; /* Set button width to 100% of the parent width */
+  padding: 10px; /* Add padding as needed */
+  font-size: 16px; /* Set font size as needed */
+}
+select{
+  width: 100%; /* Set button width to 100% of the parent width */
+  padding: 10px; /* Add padding as needed */
+  font-size: 16px
+}
+.graph_styling{
+  display: inline-block;
+  vertical-align: top;
+  margin: 10px; /* Set the margin for spacing between div elements */
+  border: 1px solid #000000; /* Add a border around each div */
+  box-sizing: border-box;
+  padding: 10px;
+  overflow: auto;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);;
+}
+.card {
+  display: inline-block;
+  margin-right: 10px; /* Adjust margin as needed */
+}
+.button-layout{
+  width: 90%;
+  background-color: rgb(255, 255, 255);
+  justify-content: center;
+  margin: auto;
+  padding: 0.5%;
+}

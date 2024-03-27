@@ -1,0 +1,51 @@
+<!--/**
+ *
+ * Copyright (c) 2023 Project CHIP Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='tableStyles.css') }}">
+    <script src="{{ url_for('static', path='scriptExecute.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='bootstrap/css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', path='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <title>Script Executor</title>
+</head>
+<body>
+{% include "navigation_bar.html" %}
+<table class="script_table">
+    <thead>
+            <tr>
+                <th>Script Name</th>
+                <th>Execution Option</th>
+                <th>Argument field</th>
+                <th>View Progress</th>
+            </tr>
+        </thead>
+    <tbody>
+            {% for script_name in script_names %}
+                <tr>
+                    <td>{{ script_name }}</td>
+                    <td><button onclick="start_script('{{script_name}}','{{script_path}}')" class="btn btn-primary"
+                                {{ 'disabled' if script_name in script_exe_details.keys() }} >Execute Script</button></td>
+                    <td><input type="text" id="{{script_name}}" required></td>
+                    <td><button onclick="showStatus('{{script_name}}',{{script_exe_details}})" class="btn btn-secondary">View Progress</button></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+</table>
+</body>
+</html>

@@ -13,8 +13,7 @@ class DUTInformationRecordEnums:
     RECORD_VENDOR_ID    = "vendor_id"
     RECORD_SOFTWARE_VERSION = "software_version"
     RECORD_HARDWARE_VERSION = "hardware_version"
-    RECORD_PLATFORM = "platform"
-    RECORD_COMMISSIONING_METHOD = "commissioning-method"
+
 class DUTInformationRecord:
     def __init__(self) -> None:
         self.record_dict = {}
@@ -24,15 +23,12 @@ class DUTInformationRecord:
         self.record_dict[DUTInformationRecordEnums.RECORD_VENDOR_ID] = None
         self.record_dict[DUTInformationRecordEnums.RECORD_SOFTWARE_VERSION] = None
         self.record_dict[DUTInformationRecordEnums.RECORD_HARDWARE_VERSION] = None
-        self.record_dict[DUTInformationRecordEnums.RECORD_PLATFORM] = None
-        self.record_dict[DUTInformationRecordEnums.RECORD_COMMISSIONING_METHOD] = None
         self.record = {}
         self.record.update({ResultsRecordTypeEnums.DUTNodeInformationRecordType: self.record_dict})
-    
-    def update_record(self, **kwargs):
-        for k,v in kwargs.items():
-            if hasattr(DUTInformationRecordEnums,k):
-                self.record_dict.update(k,v)
+
+    def update_record(self, record_dict=None):
+        for k, v in record_dict.items():
+            self.record[ResultsRecordTypeEnums.DUTNodeInformationRecordType][k] = v
 
 class SummaryTestResultsEnums:
     RECORD_TEST_NAME = "test_case_name"
@@ -43,11 +39,14 @@ class SummaryTestResultsEnums:
     RECORD_TEST_STATUS = "test_case_status"
     RECORD_TEST_COMPLETED = "Test Completed"
     RECORD_TEST_IN_PROGRESS = "Test In Progress"
-    RECORD_TOTAL_NUMBER_OF_ITERATIONS = "total_number_of_iteations"
+    RECORD_TOTAL_NUMBER_OF_ITERATIONS = "total_number_of_iterations"
     RECORD_NUMBER_OF_ITERATIONS_COMPLETED = "number_of_iterations_completed"
     RECORD_NUMBER_OF_ITERATIONS_PASSED = "number_of_iterations_passed"
     RECORD_NUMBER_OF_ITERATIONS_FAILED = "number_of_iterations_failed"
     RECORD_LIST_OF_ITERATIONS_FAILED = "list_of_iterations_failed"
+    RECORD_PLATFORM = "platform"
+    RECORD_COMMISSIONING_METHOD = "commissioning-method"
+    RECORD_ANALYTICS_METADATA = "analytics_parameters"
  
                 
 class SummaryTestResultRecord:
@@ -60,11 +59,14 @@ class SummaryTestResultRecord:
         record_dict[SummaryTestResultsEnums.RECORD_TEST_BEGIN_TIME] = kwargs_dict.get(SummaryTestResultsEnums.RECORD_TEST_BEGIN_TIME)
         record_dict[SummaryTestResultsEnums.RECORD_TEST_END_TIME] = None
         record_dict[SummaryTestResultsEnums.RECORD_TEST_STATUS] = SummaryTestResultsEnums.RECORD_TEST_IN_PROGRESS
-        record_dict[SummaryTestResultsEnums.RECORD_TOTAL_NUMBER_OF_ITERATIONS] = None
+        record_dict[SummaryTestResultsEnums.RECORD_TOTAL_NUMBER_OF_ITERATIONS] = kwargs_dict.get(SummaryTestResultsEnums.RECORD_TOTAL_NUMBER_OF_ITERATIONS)
         record_dict[SummaryTestResultsEnums.RECORD_NUMBER_OF_ITERATIONS_COMPLETED] = None
         record_dict[SummaryTestResultsEnums.RECORD_NUMBER_OF_ITERATIONS_PASSED] = None
         record_dict[SummaryTestResultsEnums.RECORD_NUMBER_OF_ITERATIONS_FAILED] = None
+        record_dict[SummaryTestResultsEnums.RECORD_PLATFORM] = kwargs_dict.get(SummaryTestResultsEnums.RECORD_PLATFORM)
+        record_dict[SummaryTestResultsEnums.RECORD_COMMISSIONING_METHOD] = kwargs_dict.get(SummaryTestResultsEnums.RECORD_COMMISSIONING_METHOD)
         record_dict[SummaryTestResultsEnums.RECORD_LIST_OF_ITERATIONS_FAILED] = []
+        record_dict[SummaryTestResultsEnums.RECORD_ANALYTICS_METADATA] = kwargs_dict.get(SummaryTestResultsEnums.RECORD_ANALYTICS_METADATA)
         self.record = {}
         self.record.update({ResultsRecordTypeEnums.SummaryRecordType : record_dict})
 
@@ -77,9 +79,11 @@ class IterationTestResultsEnums:
     RECORD_ITERATION_NUMBER = 'iteration_number'
     RECORD_ITERATION_DATA = 'iteration_data'
     RECORD_ITERATION_TC_EXECUTION_DATA = 'iteration_tc_execution_data'
+    RECORD_ITERATION_TC_ANALYTICS_DATA = 'iteration_tc_analytics_data'
     RECORD_ITERATION_BEGIN_TIME = 'iteration_begin_time'
     RECORD_ITERATION_END_TIME = 'iteration_end_time'
     RECORD_ITERATION_RESULT = 'iteration_result'
+    RECORD_ITERATION_EXCEPTION = 'exception'
     RECORD_ITERATION_RESULT_PASS = 'PASS'
     RECORD_ITERATION_RESULT_FAIL = 'FAIL'
     RECORD_ITERATION_RESULT_SKIP = 'SKIP'
@@ -96,6 +100,9 @@ class IterationTestResultRecord():
 
         iter_execution_data_record = {}
         iter_execution_data_record.update({IterationTestResultsEnums.RECORD_ITERATION_TC_EXECUTION_DATA: iter_execution_data_dict })
+
+        iter_analytics_data_record = {}
+        iter_execution_data_record.update({IterationTestResultsEnums.RECORD_ITERATION_TC_ANALYTICS_DATA: iter_analytics_data_record })
 
         iter_data = {}
         iter_data.update({IterationTestResultsEnums.RECORD_ITERATION_DATA: iter_execution_data_record})
@@ -124,6 +131,17 @@ class IterationTestResultRecord():
                 current_dict[k[-1]] = v
             else:
                 self.record[IterationTestResultsEnums.RECORD_ITERATION_RECORD].update({k:v})
+    
+    def __str__(self) -> str:
+        return self._to_dict()
+    
+    def _to_dict(self):
+        string_dict = {}
+        for k,v in self.record:
+            if isinstance(v,dict):
+                self._to_dict(v)
+            string_dict.update({k,v})
+        
 
 class TestresultsRecord():
     def __init__(self, summary_record=None, dut_record=None, iter_record=None) -> None:

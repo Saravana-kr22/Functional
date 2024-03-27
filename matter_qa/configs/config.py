@@ -24,6 +24,11 @@ class TestConfig(object):
                                      { "number_of_iterations": 3, "retry_count": 3 }
                                 }
         self._validate_config()
+    
+    def __str__(self) -> str:
+        attributes = vars(self)
+        return '\n'.join(f"{key}: {value}" for key, value in attributes.items())
+    
     def _validate_config(self):
         # TODO run some validation here to chk config object
         pass
