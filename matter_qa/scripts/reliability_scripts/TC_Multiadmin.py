@@ -22,7 +22,6 @@ from mobly import asserts
 import chip.clusters as Clusters
 
 from matter_qa.library.base_test_classes.matter_qa_base_test_class import MatterQABaseTestCaseClass
-from matter_qa.library.helper_libs.multiadmin import Mutliadmin
 from matter_qa.library.helper_libs.matter_testing_support import async_test_body, default_matter_test_main , DiscoveryFilterType
 from matter_qa.library.helper_libs.exceptions import TestCaseError, TestCaseExit
 from matter_qa.library.base_test_classes.test_results_record import TestResultEnums
