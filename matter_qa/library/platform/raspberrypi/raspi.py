@@ -142,13 +142,7 @@ class Raspi(BaseDutNodeClass):
         pass
     
     def pre_iteration_loop(self, *args, **kwargs):
-        if not kwargs.get("skip_restart_dut_each_iteration") or self.reset_dut_each_iteration:
-            self.stop_event = threading.Event()
-            self.thread = threading.Thread(target=self._start_matter_app)
-            self.thread.start()
-            self.reset_dut_each_iteration = False
-            time.sleep(2)
+        pass
+
     def post_iteration_loop(self, *args, **kwargs):
-        if not kwargs.get("skip_restart_dut_each_iteration"):
-            self.factory_reset_dut()
-            time.sleep(2)
+        pass
