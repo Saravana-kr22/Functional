@@ -6,7 +6,7 @@ from chip.CertificateAuthority import CertificateAuthorityManager
 from matter_qa.library.helper_libs.matter_testing_support import  DiscoveryFilterType
 from matter_qa.library.helper_libs.exceptions import TestCaseError
 
-def build_controller( controller_id):
+def build_controller_object( controller_id):
     # This function is used to build the controllers
     try:
         logging.info(f'Controller node id for controller-{controller_id}') 
@@ -23,7 +23,7 @@ def build_controller( controller_id):
         tb = traceback.format_exc()
         raise TestCaseError(str(e), tb)
         
-async def controller_pairing(th ,nodeid, commissioning_parameters):
+async def controller_pairing(controller_object ,nodeid, commissioning_parameters):
     try:
         dutnodeid = nodeid
         logging.info('TH1 opens a commissioning window')
@@ -32,8 +32,8 @@ async def controller_pairing(th ,nodeid, commissioning_parameters):
         #discriminator for the current controller
         discriminator = commissioning_parameters.randomDiscriminator
         logging.info(f'Commissioning process with DUT has been initialized')
-        th.ResetTestCommissioner()
-        paring_result = th.CommissionOnNetwork(
+        controller_object.ResetTestCommissioner()
+        paring_result = controller_object.CommissionOnNetwork(
                         nodeId=dutnodeid, setupPinCode=setuppincode,
                         filterType=DiscoveryFilterType.LONG_DISCRIMINATOR, filter=discriminator)
         if not paring_result.is_success:

@@ -21,7 +21,7 @@ from mobly import asserts
 import chip.clusters as Clusters
 
 from matter_qa.library.base_test_classes.matter_qa_base_test_class import MatterQABaseTestCaseClass
-from matter_qa.library.helper_libs.multiadmin import build_controller, controller_pairing
+from matter_qa.library.helper_libs.multiadmin import build_controller_object, controller_pairing
 from matter_qa.library.helper_libs.matter_testing_support import async_test_body, default_matter_test_main
 from matter_qa.library.helper_libs.exceptions import TestCaseError, TestCaseExit
 from matter_qa.library.base_test_classes.test_results_record import TestResultEnums
@@ -35,44 +35,49 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
         self.tc_id = "stress_1_2"
         super().__init__(*args)
 
-    def unique_controller_id(self, controller_id):
-        return controller_id + ((self.test_config.current_iteration-1) * self.self.max_controller)
+    def create_unique_controller_id(self, fabric):
+        #To create a unquie value to each controller
+        return fabric + ((self.test_config.current_iteration-1) * self.max_fabric_supported_by_dut)
+    
+    def create_unique_node_id(self, fabric):
+        #To create a unquie node_id for each controller
+        return fabric + ((self.test_config.current_iteration-1) * self.max_fabric_supported_by_dut)
 
     @async_test_body
     async def test_tc_multi_fabric(self):
         try:
             self.dut.factory_reset_dut()
-            self.dut.start_logging(file_name = None)
             self.pair_dut()
         except TestCaseError as e:    
-            self.dut.factory_reset_dut()
             asserts.fail("Failed to commission the TH1")
             
         @MatterQABaseTestCaseClass.iterate_tc(iterations=self.test_config.general_configs.number_of_iterations)
         async def tc_multi_fabric(*args,**kwargs):
-            list_of_controllers = []
+            #List contains the controller object
+            list_of_paired_controllers = []
             try:
-                self.max_controller = await self.read_single_attribute(self.default_controller, self.dut_node_id,0,
+                self.max_fabric_supported_by_dut = await self.read_single_attribute(self.default_controller, self.dut_node_id,0,
                                                         Clusters.OperationalCredentials.Attributes.SupportedFabrics)
-                for controller_id in range(1, self.max_controller):
-                    th = build_controller(self.unique_controller_id(controller_id))
-                    commissioning_parameters = self.openCommissioningWindow()
-                    controller_pairing(th,self.unique_controller_id(controller_id),commissioning_parameters)
-                    list_of_controllers.append(th)
-            
+                # Th1 is aldeary paired using res
+                for fabric in range(1, self.max_fabric_supported_by_dut):
+                    unique_controller_id = self.create_unique_controller_id(fabric)
+                    controller_object = build_controller_object(unique_controller_id)
+                    unique_node_id = self.create_unique_node_id(fabric)
+                    commissioning_parameters = self.openCommissioningWindow(dev_ctrl = self.default_controller, node_id = unique_node_id)
+                    controller_pairing(controller_object, unique_controller_id ,commissioning_parameters)
+                    list_of_paired_controllers.append(controller_object)
             except Exception as e:
                 self.iteration_test_result == TestResultEnums.TEST_RESULT_FAIL
-            
             try:
-                for controller in list_of_controllers:
-                    self.unpair_dut(controller,self.unique_controller_id(list_of_controllers.index(controller)+1))
-                    controller.Shutdown()
-
+                for controller_object in list_of_paired_controllers:
+                    self.unpair_dut(controller_object,self.unique_controller_id(list_of_paired_controllers.index(controller_object)+1))
+                    controller_object.Shutdown()
             except Exception as e:
                 tb = traceback.format_exc()
                 raise TestCaseExit(str(e), tb)
+            await self.fetch_analytics_from_dut()
                 
-        await tc_multi_fabric(self, skip_restart_dut_each_iteration = True)
-        self.dut.factory_reset_dut()
+        await tc_multi_fabric(self)
+        
 if __name__ == "__main__":
-    default_matter_test_main(testclass=TC_Multiadmin)
+    default_matter_test_main(testclass=TC_Multiadmin,do_not_commision_first = True)

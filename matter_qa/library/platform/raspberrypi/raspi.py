@@ -73,7 +73,11 @@ class Raspi(BaseDutNodeClass):
             log.info("Example App has been killed")
             self._delete_storage()
             self.ssh_session.close_ssh_connection()
-
+            self.stop_event = threading.Event()
+            self.thread = threading.Thread(target=self._start_matter_app)
+            self.thread.start()
+            self.reset_dut_each_iteration = False
+            time.sleep(2)
         except Exception as e:
             log.error(e, exc_info=True)
     
@@ -112,11 +116,7 @@ class Raspi(BaseDutNodeClass):
         return True
 
     def start_logging(self, file_name, *args, **kwargs):
-        self.stop_event = threading.Event()
-        self.thread = threading.Thread(target=self._start_matter_app)
-        self.thread.start()
-        self.reset_dut_each_iteration = False
-        time.sleep(2)
+        pass
 
     def _start_logging(self, raspi_log, file_name=None):
 
