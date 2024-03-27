@@ -14,7 +14,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-import time
 import logging
 import traceback
 from mobly import asserts
@@ -56,31 +55,27 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
         except Exception as e:
             logging.error(f"Failed to build the controller for {controller_id} with error {str(e)}"
                         ,exc_info=True)
-            tb = traceback.format_exc()
-            raise TestCaseError(str(e), tb)
+            raise TestCaseError(str(e))
             
     async def controller_pairing(self,controller_object ,nodeid, commissioning_parameters):
         try:
-            dutnodeid = nodeid
             logging.info('TH1 opens a commissioning window')
             #Setuppincode for the current controller
-            setuppincode = commissioning_parameters.commissioningParameters.setupPinCode
+            setup_pincode = commissioning_parameters.commissioningParameters.setupPinCode
             #discriminator for the current controller
             discriminator = commissioning_parameters.randomDiscriminator
             logging.info(f'Commissioning process with DUT has been initialized')
             controller_object.ResetTestCommissioner()
             paring_result = controller_object.CommissionOnNetwork(
-                            nodeId=dutnodeid, setupPinCode=setuppincode,
+                            nodeId=nodeid, setupPinCode=setup_pincode,
                             filterType=DiscoveryFilterType.LONG_DISCRIMINATOR, filter=discriminator)
             if not paring_result.is_success:
                 logging.error("Failed to pair waiting for commissioning window to close")
-                time.sleep(180)
-                raise TestCaseError(str(paring_result), tb)
+                raise TestCaseError(str(paring_result))
             return paring_result
         except Exception as e:
             logging.error(e, exc_info=True)
-            tb = traceback.format_exc()
-            raise TestCaseError(str(e), tb)
+            raise TestCaseError(str(e))
 
     @async_test_body
     async def test_tc_multi_fabric(self):
@@ -97,13 +92,13 @@ class TC_Multiadmin(MatterQABaseTestCaseClass):
             try:
                 self.max_fabric_supported_by_dut = await self.read_single_attribute(self.default_controller, self.dut_node_id,0,
                                                         Clusters.OperationalCredentials.Attributes.SupportedFabrics)
-                # Th1 is aldeary paired using res
+                # Th1 is already paired using rest of the controllers
                 for fabric in range(1, self.max_fabric_supported_by_dut):
                     unique_controller_id = self.create_unique_controller_id(fabric)
                     controller_object = self.build_controller_object(unique_controller_id)
                     unique_node_id = self.create_unique_node_id(fabric)
                     commissioning_parameters = self.openCommissioningWindow(dev_ctrl = self.default_controller, node_id = self.dut_node_id)
-                    await self.controller_pairing(controller_object, unique_controller_id ,commissioning_parameters)
+                    await self.controller_pairing(controller_object, unique_node_id ,commissioning_parameters)
                     list_of_paired_controllers.append(controller_object)
             except Exception as e:
                 self.iteration_test_result == TestResultEnums.TEST_RESULT_FAIL
