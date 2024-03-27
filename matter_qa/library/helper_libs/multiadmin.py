@@ -7,8 +7,8 @@ from matter_qa.library.helper_libs.exceptions import TestCaseError
 
 
 class Mutliadmin(MatterBaseTest):
-    def __init__(self) -> None:
-        pass
+    def __init__(self, *args):
+        super().__init__(*args)
 
     def build_controller_object(self, controller_id):
         # This function is used to build the controllers
